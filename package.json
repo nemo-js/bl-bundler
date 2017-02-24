@@ -1,0 +1,26 @@
+{
+  "name": "bl-bundler",
+  "version": "1.0.0",
+  "description": "Bundle your scripts in one file to improve performance",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nemo13/bl-bundler.git"
+  },
+  "keywords": [
+    "bundle",
+    "minify"
+  ],
+  "author": "Dimitris Moudilos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nemo13/bl-bundler/issues"
+  },
+  "homepage": "https://github.com/nemo13/bl-bundler#readme",
+  "dependencies": {
+    "node-minify": "^2.0.3"
+  }
+}
