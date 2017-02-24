@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "outDir": "dist",
+    "outDir": "",
     "module": "commonjs",
     "declaration": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": false,
     "removeComments": true,
     "moduleResolution": "node",
