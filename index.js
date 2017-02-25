@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
 const compressor = require("node-minify");
@@ -66,7 +65,9 @@ var BlBundler;
             if (this.urlPrefix != null && this.urlPrefix != "") {
                 relPath = this.urlPrefix + relPath;
             }
-            relPath += "?_v=" + version;
+            if (version == null || version == "") {
+                relPath += "?_v=" + version;
+            }
             switch (type) {
                 case "js":
                     return `<script src="${relPath}"></script>`;
@@ -84,8 +85,8 @@ var BlBundler;
             this.groups = {};
             this.compiledBundles = [];
             this.options = options || { rootPath: "" };
-            if (this.options.live == null) {
-                this.options.live = true;
+            if (this.options.minify == null) {
+                this.options.minify = true;
             }
             if (this.options.enabled == null) {
                 this.options.enabled = true;
@@ -109,7 +110,7 @@ var BlBundler;
                 return group.render(this.options.version, type, false);
             }
             const alreadyCompiled = this.compiledBundles.indexOf(groupName + type) !== -1;
-            if (!alreadyCompiled || this.options.live === true) {
+            if (!alreadyCompiled || this.options.minify === true) {
                 group.compile(this.options.rootPath, type);
                 if (!alreadyCompiled) {
                     this.compiledBundles.push(groupName + type);

@@ -2,7 +2,6 @@ import fs = require("fs");
 import path = require("path");
 import compressor = require("node-minify");
 
-//todo: add support for live minification
 export module BlBundler {
 
     export class Bundle {
@@ -64,7 +63,7 @@ export module BlBundler {
             });
         }
 
-        render(version: number, type: string, asBundle: boolean = true): string {
+        render(version: string, type: string, asBundle: boolean = true): string {
             if (asBundle === true) {
                 return this.getHtmlInclude(version, type, this.getPathForType(type));
             }
@@ -77,11 +76,15 @@ export module BlBundler {
             return allIncludes;
         }
 
-        private getHtmlInclude(version: number, type: string, relPath: string) {
+        private getHtmlInclude(version: string, type: string, relPath: string) {
             if (this.urlPrefix != null && this.urlPrefix != "") {
                 relPath = this.urlPrefix + relPath;
             }
-            relPath += "?_v=" + version;
+
+            if (version == null || version == "") {
+                relPath += "?_v=" + version;
+            }
+        
             switch (type) {
                 case "js":
                     return `<script src="${relPath}"></script>`;
@@ -97,10 +100,10 @@ export module BlBundler {
 
     export interface IBundlerOptions {
         rootPath: string;
-        live?: boolean;
+        minify?: boolean;
         enabled?: boolean;
         urlPrefix?: string;
-        version?: number;
+        version?: string;
     }
 
     export class Bundler {
@@ -110,8 +113,8 @@ export module BlBundler {
 
         constructor(options: IBundlerOptions) {
             this.options = options || { rootPath: "" };
-            if (this.options.live == null) {
-                this.options.live = true;
+            if (this.options.minify == null) {
+                this.options.minify = true;
             }
             if (this.options.enabled == null) {
                 this.options.enabled = true;
@@ -140,7 +143,7 @@ export module BlBundler {
             }
 
             const alreadyCompiled = this.compiledBundles.indexOf(groupName + type) !== -1;
-            if (!alreadyCompiled || this.options.live === true) {
+            if (!alreadyCompiled || this.options.minify === true) {
                 group.compile(this.options.rootPath, type);
                 if (!alreadyCompiled) {
                     this.compiledBundles.push(groupName + type);

@@ -8,16 +8,16 @@ export declare module BlBundler {
         addJs(relativePath: string): Bundle;
         addCss(relativePath: string): Bundle;
         compile(rootUrl: string, type: string): string;
-        render(version: number, type: string, asBundle?: boolean): string;
+        render(version: string, type: string, asBundle?: boolean): string;
         private getHtmlInclude(version, type, relPath);
         private getPathForType(type);
     }
     interface IBundlerOptions {
         rootPath: string;
-        live?: boolean;
+        minify?: boolean;
         enabled?: boolean;
         urlPrefix?: string;
-        version?: number;
+        version?: string;
     }
     class Bundler {
         private options;
