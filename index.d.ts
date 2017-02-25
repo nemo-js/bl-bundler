@@ -7,7 +7,7 @@ export declare module BlBundler {
         addFile(type: string, path: string): void;
         addJs(relativePath: string): Bundle;
         addCss(relativePath: string): Bundle;
-        compile(rootUrl: string, type: string): string;
+        compile(rootUrl: string, type: string, minify: boolean): string;
         render(version: string, type: string, asBundle?: boolean): string;
         private getHtmlInclude(version, type, relPath);
         private getPathForType(type);

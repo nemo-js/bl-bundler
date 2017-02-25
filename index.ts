@@ -32,7 +32,7 @@ export module BlBundler {
             return this;
         }
 
-        compile(rootUrl: string, type: string) {
+        compile(rootUrl: string, type: string, minify: boolean) {
             if (!fs.existsSync(path.join(rootUrl, "_bundled"))) {
                 fs.mkdirSync(path.join(rootUrl, "_bundled"));
             }
@@ -55,12 +55,14 @@ export module BlBundler {
             var fullPath = path.join(rootUrl, this.getPathForType(type));
             fs.writeFileSync(fullPath, totalCode);
 
-            compressor.minify({
-                compressor: 'uglifyjs',
-                input: fullPath,
-                output: fullPath
-            }).then(() => {
-            });
+            if (minify === true) {
+                compressor.minify({
+                    compressor: 'uglifyjs',
+                    input: fullPath,
+                    output: fullPath
+                }).then(() => {
+                });
+            }
         }
 
         render(version: string, type: string, asBundle: boolean = true): string {
@@ -142,12 +144,11 @@ export module BlBundler {
                 return group.render(this.options.version, type, false);
             }
 
-            const alreadyCompiled = this.compiledBundles.indexOf(groupName + type) !== -1;
-            if (!alreadyCompiled || this.options.minify === true) {
-                group.compile(this.options.rootPath, type);
-                if (!alreadyCompiled) {
-                    this.compiledBundles.push(groupName + type);
-                }
+            const key = groupName + type;
+            const alreadyCompiled = this.compiledBundles.indexOf(key) !== -1;
+            if (!alreadyCompiled) {
+                group.compile(this.options.rootPath, type, this.options.minify);
+                this.compiledBundles.push(key);
             }
 
             return group.render(this.options.version, type);
