@@ -1,6 +1,6 @@
 {
   "name": "bl-bundler",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Bundle your scripts in one file to improve performance",
   "main": "index.js",
   "scripts": {
