@@ -57,8 +57,7 @@ You can later use bundles in your views like this:
 * `rootPath`: The root location of your scripts/css (`required`)
 * `minify`:  (default: `true`)
 * `enabled`: (default: `true`)
-* `urlPrefix`: in case you have a cdn server, you can enter its url here 
-  in order to be appended to the latest version (default: `""`)
+* `urlPrefix`: in case you have a cdn server, you can enter its url here (default: `""`)
 * `version`: appends ?v={version} to the script/link to prevent caching
   when a new version is deployed (default: `""`)
 
