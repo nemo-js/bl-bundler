@@ -21,7 +21,8 @@ var BlBundler = require("bl-bundler").BlBundler;
 var bundler = BlBundler.init({
   rootPath: path.join(__dirname, "/public"),
   enabled: areWeInProductionMode,
-  minify: areWeInProductionMode
+  minify: areWeInProductionMode,
+  allowCORS: true
 });
 
 bundler
