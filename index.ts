@@ -65,20 +65,20 @@ export module BlBundler {
             }
         }
 
-        render(version: string, type: string, asBundle: boolean = true): string {
+        render(version: string, type: string, asBundle: boolean = true, cors: boolean = true): string {
             if (asBundle === true) {
-                return this.getHtmlInclude(version, type, this.getPathForType(type));
+                return this.getHtmlInclude(version, type, this.getPathForType(type), cors);
             }
 
             var allIncludes = "";
             const files = this.files[type];
             for (let i = 0; i < files.length; i++) {
-                allIncludes += this.getHtmlInclude(version, type, files[i]);
+                allIncludes += this.getHtmlInclude(version, type, files[i], cors);
             }
             return allIncludes;
         }
 
-        private getHtmlInclude(version: string, type: string, relPath: string) {
+        private getHtmlInclude(version: string, type: string, relPath: string, cors: boolean) {
             if (this.urlPrefix != null && this.urlPrefix != "") {
                 relPath = this.urlPrefix + relPath;
             }
@@ -87,9 +87,10 @@ export module BlBundler {
                 relPath += "?_v=" + version;
             }
         
+            var corsAttr = cors === true ? ' crossorigin="anonymous"' : ""
             switch (type) {
                 case "js":
-                    return `<script src="${relPath}"></script>`;
+                    return `<script src="${relPath}"${corsAttr}></script>`;
                 case "css":
                     return `<link type="text/css" rel="stylesheet" href="${relPath}">`;
             }
@@ -102,6 +103,7 @@ export module BlBundler {
 
     export interface IBundlerOptions {
         rootPath: string;
+        allowCORS?: boolean;
         minify?: boolean;
         enabled?: boolean;
         urlPrefix?: string;
@@ -124,6 +126,9 @@ export module BlBundler {
             if (this.options.rootPath == null) {
                 this.options.rootPath = "";
             }
+            if (this.options.allowCORS == null) {
+                this.options.allowCORS = false;
+            }
         }
 
         public bundle(bundleName: string) {
@@ -141,7 +146,7 @@ export module BlBundler {
             }
 
             if (this.options.enabled === false) {
-                return group.render(this.options.version, type, false);
+                return group.render(this.options.version, type, false, this.options.allowCORS);
             }
 
             const key = groupName + type;
@@ -151,7 +156,7 @@ export module BlBundler {
                 this.compiledBundles.push(key);
             }
 
-            return group.render(this.options.version, type);
+            return group.render(this.options.version, type, true, this.options.allowCORS);
         }
 
         public renderJs(groupName: string): string {

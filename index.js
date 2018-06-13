@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
 const compressor = require("node-minify");
@@ -52,27 +53,28 @@ var BlBundler;
                 });
             }
         }
-        render(version, type, asBundle = true) {
+        render(version, type, asBundle = true, cors = true) {
             if (asBundle === true) {
-                return this.getHtmlInclude(version, type, this.getPathForType(type));
+                return this.getHtmlInclude(version, type, this.getPathForType(type), cors);
             }
             var allIncludes = "";
             const files = this.files[type];
             for (let i = 0; i < files.length; i++) {
-                allIncludes += this.getHtmlInclude(version, type, files[i]);
+                allIncludes += this.getHtmlInclude(version, type, files[i], cors);
             }
             return allIncludes;
         }
-        getHtmlInclude(version, type, relPath) {
+        getHtmlInclude(version, type, relPath, cors) {
             if (this.urlPrefix != null && this.urlPrefix != "") {
                 relPath = this.urlPrefix + relPath;
             }
             if (version == null || version == "") {
                 relPath += "?_v=" + version;
             }
+            var corsAttr = cors === true ? ' crossorigin="anonymous"' : "";
             switch (type) {
                 case "js":
-                    return `<script src="${relPath}"></script>`;
+                    return `<script src="${relPath}"${corsAttr}></script>`;
                 case "css":
                     return `<link type="text/css" rel="stylesheet" href="${relPath}">`;
             }
@@ -96,6 +98,9 @@ var BlBundler;
             if (this.options.rootPath == null) {
                 this.options.rootPath = "";
             }
+            if (this.options.allowCORS == null) {
+                this.options.allowCORS = false;
+            }
         }
         bundle(bundleName) {
             if (this.groups[bundleName] == null) {
@@ -109,7 +114,7 @@ var BlBundler;
                 throw new Error(`Bundle group '${groupName}' does not exist`);
             }
             if (this.options.enabled === false) {
-                return group.render(this.options.version, type, false);
+                return group.render(this.options.version, type, false, this.options.allowCORS);
             }
             const key = groupName + type;
             const alreadyCompiled = this.compiledBundles.indexOf(key) !== -1;
@@ -117,7 +122,7 @@ var BlBundler;
                 group.compile(this.options.rootPath, type, this.options.minify);
                 this.compiledBundles.push(key);
             }
-            return group.render(this.options.version, type);
+            return group.render(this.options.version, type, true, this.options.allowCORS);
         }
         renderJs(groupName) {
             return this.render('js', groupName);

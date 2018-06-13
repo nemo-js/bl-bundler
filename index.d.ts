@@ -8,12 +8,13 @@ export declare module BlBundler {
         addJs(relativePath: string): Bundle;
         addCss(relativePath: string): Bundle;
         compile(rootUrl: string, type: string, minify: boolean): string;
-        render(version: string, type: string, asBundle?: boolean): string;
-        private getHtmlInclude(version, type, relPath);
+        render(version: string, type: string, asBundle?: boolean, cors?: boolean): string;
+        private getHtmlInclude(version, type, relPath, cors);
         private getPathForType(type);
     }
     interface IBundlerOptions {
         rootPath: string;
+        allowCORS?: boolean;
         minify?: boolean;
         enabled?: boolean;
         urlPrefix?: string;
